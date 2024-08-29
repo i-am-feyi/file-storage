@@ -13,7 +13,7 @@ import { v4 as uuidv4 } from "uuid";
 import { current } from "./users";
 
 export const generateUploadUrl = mutation(async (ctx) => {
-  const identity = await ctx.auth.getUserIdentity();
+  const identity = await current(ctx, { throwError: true });
 
   if (!identity) {
     throw new ConvexError("you must be logged in to upload a file");
