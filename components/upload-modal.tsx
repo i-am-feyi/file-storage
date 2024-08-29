@@ -59,6 +59,7 @@ const UploadModal = (props: Props) => {
       console.log(res);
       form.reset();
       onClose();
+      toast.success("File uploaded successfully!");
     },
     onUploadProgress: (p) => {
       console.log(p);
