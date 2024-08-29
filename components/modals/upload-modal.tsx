@@ -23,8 +23,9 @@ import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import toast from "react-hot-toast";
 import { Loader2 } from "lucide-react";
-import { Id } from "@/convex/_generated/dataModel";
+import { Doc, Id } from "@/convex/_generated/dataModel";
 import { useOrganization, useUser } from "@clerk/nextjs";
+import { fileTypes } from "@/constants";
 
 const uploadFormSchema = z.object({
   title: z
@@ -64,7 +65,7 @@ const UploadModal = () => {
             fileStorageId: storageId,
             name: form.getValues("title"),
             orgId: orgId!,
-            type: "csv",
+            type: fileTypes[res[0].type],
           });
         }
       }

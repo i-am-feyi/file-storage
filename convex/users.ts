@@ -89,18 +89,6 @@ export const addOrgIdToUser = internalMutation({
 //   },
 // });
 
-// export const getUserProfile = query({
-//   args: { userId: v.id("users") },
-//   async handler(ctx, args) {
-//     const user = await ctx.db.get(args.userId);
-
-//     return {
-//       name: user?.name,
-//       image: user?.image,
-//     };
-//   },
-// });
-
 // export const getMe = query({
 //   args: {},
 //   async handler(ctx) {
@@ -155,6 +143,18 @@ export async function userByClerkId(ctx: QueryCtx | MutationCtx, clerkId: string
 
   return user;
 }
+
+export const getUserProfile = query({
+  args: { userId: v.id("users") },
+  async handler(ctx, { userId }) {
+    const user = await ctx.db.get(userId);
+
+    return {
+      name: user?.fullName,
+      image: user?.imageUrl,
+    };
+  },
+});
 
 // export const getUserInfo = query({
 //   args: { clerk_id: v.string() },

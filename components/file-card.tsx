@@ -14,12 +14,15 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreVertical, Trash2 } from "lucide-react";
+import { ImageIcon, MoreVertical, Trash2 } from "lucide-react";
 import { useConfirmModal } from "@/hooks/use-confirm-modal";
 import { Doc } from "@/convex/_generated/dataModel";
-import { useMutation } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import toast from "react-hot-toast";
+import Image from "next/image";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { formatRelative } from "date-fns";
 
 const FileCardActions = ({ file }: { file: Doc<"files"> }) => {
   const { onOpen, setOnConfirm } = useConfirmModal();
@@ -55,19 +58,57 @@ const FileCardActions = ({ file }: { file: Doc<"files"> }) => {
   );
 };
 
-const FileCard = ({ file }: { file: Doc<"files"> }) => {
+const FileCard = ({ file }: { file: Doc<"files"> & { url: string | null } }) => {
+  const fileCreator = useQuery(api.users.getUserProfile, {
+    userId: file.userId,
+  });
   return (
     <Card>
       <CardHeader className="relative">
         <CardTitle className="flex justify-between">
-          <span>{file.name}</span>
+          <div className="flex gap-1 items-center">
+            <ImageIcon />
+            <span className="text-lg font-normal capitalize">{file.name}</span>
+          </div>
         </CardTitle>
         <div className="absolute right-5 top-5">
           <FileCardActions file={file} />
         </div>
       </CardHeader>
-      <CardContent></CardContent>
-      <CardFooter></CardFooter>
+      <CardContent>
+        <div className="flex flex-col items-center">
+          {file.url && file.type === "jpeg" && (
+            <Image
+              src={file.url}
+              alt={file.name}
+              width={200}
+              height={100}
+              className="size-40 w-auto"
+            />
+          )}
+          {file.url && file.type === "png" && (
+            <Image
+              src={file.url}
+              alt={file.name}
+              width={200}
+              height={100}
+              className="size-40 w-auto"
+            />
+          )}
+        </div>
+      </CardContent>
+      <CardFooter className="flex justify-between">
+        <div className="flex gap-2 text-xs text-gray-700 w-40 items-center">
+          <Avatar className="w-6 h-6">
+            <AvatarImage src={fileCreator?.image} />
+            <AvatarFallback>CN</AvatarFallback>
+          </Avatar>
+          {fileCreator?.name}
+        </div>
+        <div className="text-xs text-gray-700 first-letter:capitalize">
+          {formatRelative(new Date(file._creationTime), new Date())}
+        </div>
+      </CardFooter>
     </Card>
   );
 };

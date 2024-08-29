@@ -10,7 +10,7 @@ export default defineSchema(
     files: defineTable({
       fileId: v.string(),
       name: v.string(),
-      type: fileTypes,
+      type: v.any(),
       orgId: v.string(),
       fileStorageId: v.id("_storage"),
       userId: v.id("users"),

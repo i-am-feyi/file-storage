@@ -72,7 +72,7 @@ export const createFile = mutation({
     name: v.string(),
     fileStorageId: v.id("_storage"),
     orgId: v.string(),
-    type: fileTypes,
+    type: v.any(),
   },
   async handler(ctx, args) {
     const hasAccess = await hasAccessToOrg(ctx, args.orgId);
@@ -146,7 +146,7 @@ export const getFiles = query({
     const filesWithUrl = await Promise.all(
       files.map(async (file) => ({
         ...file,
-        url: await ctx.storage.getUrl(file.fileId),
+        url: await ctx.storage.getUrl(file.fileStorageId),
       }))
     );
 
