@@ -7,38 +7,30 @@ import { useForm } from "react-hook-form";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from "./ui/form";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+} from "@/components/ui/form";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
-import { Input } from "./ui/input";
-import { Button } from "./ui/button";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { useUploadModal } from "@/hooks/use-upload-modal";
 
 import { useUploadFiles } from "@xixixao/uploadstuff/react";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import toast from "react-hot-toast";
-
-type Props = {};
+import { Loader2 } from "lucide-react";
+import { Id } from "@/convex/_generated/dataModel";
+import { useOrganization, useUser } from "@clerk/nextjs";
 
 const uploadFormSchema = z.object({
   title: z
     .string()
     .min(3, { message: "Enter a valid file name." })
     .max(200, { message: "File name is too long!" }),
-  // file: z.custom<File | null>((val) => val instanceof File, "Required"),
   file: z
     .custom<FileList>((val) => val instanceof FileList, "Select a file to upload.")
     .refine((files) => files.length > 0, "Select a file to upload."),
@@ -49,17 +41,36 @@ type successResponse = {
   storageId: string;
 };
 
-const UploadModal = (props: Props) => {
+const UploadModal = () => {
   const { isOpen, onClose } = useUploadModal();
 
+  const { isLoaded, organization } = useOrganization();
+  const { user } = useUser();
+
+  const orgId = organization?.id ?? user?.id;
+
   const generateUploadUrl = useMutation(api.files.generateUploadUrl);
+  const createFile = useMutation(api.files.createFile);
 
   const { startUpload, isUploading } = useUploadFiles(generateUploadUrl, {
     onUploadComplete: async (res) => {
       console.log(res);
+      const response = res[0].response as successResponse;
+      if (response.storageId) {
+        const storageId = response.storageId as Id<"_storage">;
+
+        if (isLoaded && user) {
+          await createFile({
+            fileStorageId: storageId,
+            name: form.getValues("title"),
+            orgId: orgId!,
+            type: "csv",
+          });
+        }
+      }
       form.reset();
       onClose();
-      toast.success("File uploaded successfully!");
+      toast.success("File uploaded successfully!", { duration: 3000 });
     },
     onUploadProgress: (p) => {
       console.log(p);
@@ -118,7 +129,9 @@ const UploadModal = (props: Props) => {
                   </FormItem>
                 )}
               />
-              <Button type="submit">Submit</Button>
+              <Button type="submit" disabled={isUploading}>
+                {isUploading ? <Loader2 className="animate-spin" /> : <span>Submit</span>}
+              </Button>
             </form>
           </Form>
         </DialogContent>

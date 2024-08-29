@@ -48,8 +48,11 @@ export async function hasAccessToOrg(ctx: QueryCtx | MutationCtx, orgId: string)
   return { user };
 }
 
-async function hasAccessToFile(ctx: QueryCtx | MutationCtx, fileId: Id<"files">) {
-  const file = await ctx.db.get(fileId);
+async function hasAccessToFile(ctx: QueryCtx | MutationCtx, fileId: string) {
+  const file = await ctx.db
+    .query("files")
+    .withIndex("by_fileId", (q) => q.eq("fileId", fileId))
+    .unique();
 
   if (!file) {
     return null;
@@ -67,7 +70,7 @@ async function hasAccessToFile(ctx: QueryCtx | MutationCtx, fileId: Id<"files">)
 export const createFile = mutation({
   args: {
     name: v.string(),
-    fileId: v.id("_storage"),
+    fileStorageId: v.id("_storage"),
     orgId: v.string(),
     type: fileTypes,
   },
@@ -82,7 +85,7 @@ export const createFile = mutation({
       fileId: uuidv4(),
       name: args.name,
       orgId: args.orgId,
-      fileStorageId: args.fileId,
+      fileStorageId: args.fileStorageId,
       type: args.type,
       userId: hasAccess.user._id,
     });
@@ -151,6 +154,36 @@ export const getFiles = query({
   },
 });
 
+export const deleteFile = mutation({
+  args: { fileId: v.string() },
+  async handler(ctx, { fileId }) {
+    const access = await hasAccessToFile(ctx, fileId);
+
+    if (!access) {
+      throw new ConvexError("Unauthorized file access!");
+    }
+
+    assertCanDeleteFile(access.user, access.file);
+
+    await ctx.db.delete(access.file._id);
+    await ctx.storage.delete(access.file.fileStorageId);
+
+    // await ctx.db.patch(args.fileId, {
+    //   shouldDelete: true,
+    // });
+  },
+});
+
+function assertCanDeleteFile(user: Doc<"users">, file: Doc<"files">) {
+  const canDelete =
+    file.userId === user._id ||
+    user.orgIds.find((org) => org.orgId === file.orgId)?.role === "admin";
+
+  if (!canDelete) {
+    throw new ConvexError("Insufficient file permissions!");
+  }
+}
+
 // export const deleteAllFiles = internalMutation({
 //   args: {},
 //   async handler(ctx) {
@@ -165,33 +198,6 @@ export const getFiles = query({
 //         return await ctx.db.delete(file._id);
 //       })
 //     );
-//   },
-// });
-
-// function assertCanDeleteFile(user: Doc<"users">, file: Doc<"files">) {
-//   const canDelete =
-//     file.userId === user._id ||
-//     user.orgIds.find((org) => org.orgId === file.orgId)?.role === "admin";
-
-//   if (!canDelete) {
-//     throw new ConvexError("you have no acces to delete this file");
-//   }
-// }
-
-// export const deleteFile = mutation({
-//   args: { fileId: v.id("files") },
-//   async handler(ctx, args) {
-//     const access = await hasAccessToFile(ctx, args.fileId);
-
-//     if (!access) {
-//       throw new ConvexError("no access to file");
-//     }
-
-//     assertCanDeleteFile(access.user, access.file);
-
-//     await ctx.db.patch(args.fileId, {
-//       shouldDelete: true,
-//     });
 //   },
 // });
 

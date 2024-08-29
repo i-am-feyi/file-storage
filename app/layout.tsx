@@ -4,6 +4,7 @@ import "./globals.css";
 import ConvexClerkProvider from "@/providers/convex-clerk-provider";
 import { twMerge } from "tailwind-merge";
 import { Toaster } from "react-hot-toast";
+import ModalProvider from "@/providers/modal-provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,8 +23,8 @@ export default function RootLayout({
       <ConvexClerkProvider>
         <body className={twMerge(inter.className, "antialiased")}>
           {children}
-
           <Toaster />
+          <ModalProvider />
         </body>
       </ConvexClerkProvider>
     </html>
