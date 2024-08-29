@@ -7,18 +7,16 @@ import { Button } from "./ui/button";
 
 const Header = () => {
   return (
-    <div>
-      Header
-      <SignedIn></SignedIn>
-      <Authenticated>
-        <OrganizationSwitcher />
-        <UserButton />
-      </Authenticated>
-      <Unauthenticated>
-        <SignInButton>
-          <Button>Sign in</Button>
-        </SignInButton>
-      </Unauthenticated>
+    <div className="border-b py-3">
+      <div className="container">
+        <div className="flex justify-between items-center">
+          <div className="text-lg font-semibold">InCloudly.io</div>
+          <div className="flex items-center gap-4">
+            <OrganizationSwitcher />
+            <UserButton />
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
