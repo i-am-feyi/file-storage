@@ -57,6 +57,7 @@ const UploadModal = (props: Props) => {
   const { startUpload, isUploading } = useUploadFiles(generateUploadUrl, {
     onUploadComplete: async (res) => {
       console.log(res);
+      form.reset();
       onClose();
     },
     onUploadProgress: (p) => {
@@ -83,8 +84,7 @@ const UploadModal = (props: Props) => {
 
   return (
     <div>
-      <Dialog open={isOpen}>
-        <DialogTrigger>Open</DialogTrigger>
+      <Dialog open={isOpen} onOpenChange={onClose}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle className="mb-4">Upload Your File</DialogTitle>

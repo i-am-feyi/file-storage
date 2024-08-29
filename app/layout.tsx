@@ -20,8 +20,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <ConvexClerkProvider>
-        <body className={twMerge(inter.className, "antialiased")}>{children}</body>
-        <Toaster />
+        <body className={twMerge(inter.className, "antialiased")}>
+          {children}
+
+          <Toaster />
+        </body>
       </ConvexClerkProvider>
     </html>
   );
