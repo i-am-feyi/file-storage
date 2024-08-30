@@ -22,9 +22,9 @@ export default defineSchema(
       .index("by_shouldDelete", ["shouldDelete"]),
 
     favorites: defineTable({
-      fileId: v.id("files"),
+      fileId: v.string(),
       orgId: v.string(),
-      userId: v.id("users"),
+      userId: v.string(),
     }).index("by_userId_orgId_fileId", ["userId", "orgId", "fileId"]),
 
     users: defineTable({

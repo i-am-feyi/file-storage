@@ -1,16 +1,9 @@
-import { ConvexError, v } from "convex/values";
-import {
-  MutationCtx,
-  QueryCtx,
-  internalMutation,
-  mutation,
-  query,
-} from "./_generated/server";
-
-import { fileTypes } from "./schema";
-import { Doc, Id } from "./_generated/dataModel";
-import { v4 as uuidv4 } from "uuid";
 import { current } from "./users";
+import { v4 as uuidv4 } from "uuid";
+import { fileTypes } from "./schema";
+import { Doc } from "./_generated/dataModel";
+import { ConvexError, v } from "convex/values";
+import { MutationCtx, QueryCtx, mutation, query } from "./_generated/server";
 
 export const generateUploadUrl = mutation(async (ctx) => {
   const identity = await current(ctx, { throwError: true });
@@ -184,6 +177,37 @@ function assertCanDeleteFile(user: Doc<"users">, file: Doc<"files">) {
   }
 }
 
+export const toggleFavorite = mutation({
+  args: { fileId: v.string() },
+  async handler(ctx, { fileId }) {
+    const access = await hasAccessToFile(ctx, fileId);
+
+    if (!access) {
+      throw new ConvexError("[TOGGLE_FAVORITE]_Unauthorized File Access!");
+    }
+
+    const favorite = await ctx.db
+      .query("favorites")
+      .withIndex("by_userId_orgId_fileId", (q) =>
+        q
+          .eq("userId", access.user._id)
+          .eq("orgId", access.file.orgId)
+          .eq("fileId", access.file._id)
+      )
+      .unique();
+
+    if (!favorite) {
+      await ctx.db.insert("favorites", {
+        fileId: access.file._id,
+        userId: access.user._id,
+        orgId: access.file.orgId,
+      });
+    } else {
+      await ctx.db.delete(favorite._id);
+    }
+  },
+});
+
 // export const deleteAllFiles = internalMutation({
 //   args: {},
 //   async handler(ctx) {
@@ -215,37 +239,6 @@ function assertCanDeleteFile(user: Doc<"users">, file: Doc<"files">) {
 //     await ctx.db.patch(args.fileId, {
 //       shouldDelete: false,
 //     });
-//   },
-// });
-
-// export const toggleFavorite = mutation({
-//   args: { fileId: v.id("files") },
-//   async handler(ctx, args) {
-//     const access = await hasAccessToFile(ctx, args.fileId);
-
-//     if (!access) {
-//       throw new ConvexError("no access to file");
-//     }
-
-//     const favorite = await ctx.db
-//       .query("favorites")
-//       .withIndex("by_userId_orgId_fileId", (q) =>
-//         q
-//           .eq("userId", access.user._id)
-//           .eq("orgId", access.file.orgId)
-//           .eq("fileId", access.file._id)
-//       )
-//       .first();
-
-//     if (!favorite) {
-//       await ctx.db.insert("favorites", {
-//         fileId: access.file._id,
-//         userId: access.user._id,
-//         orgId: access.file.orgId,
-//       });
-//     } else {
-//       await ctx.db.delete(favorite._id);
-//     }
 //   },
 // });
 

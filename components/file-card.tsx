@@ -29,6 +29,7 @@ const FileCardActions = ({ file }: { file: Doc<"files"> & { url: string | null }
   const { onOpen, setOnConfirm } = useConfirmModal();
 
   const deleteFile = useMutation(api.files.deleteFile);
+  const toggleFavorite = useMutation(api.files.toggleFavorite);
 
   const onCallDelete = async () => {
     await deleteFile({ fileId: file.fileId });
@@ -40,6 +41,12 @@ const FileCardActions = ({ file }: { file: Doc<"files"> & { url: string | null }
   const onDeleteClick = () => {
     onOpen();
     setOnConfirm(onCallDelete);
+  };
+
+  const onFavoriteClick = async () => {
+    await toggleFavorite({
+      fileId: file.fileId,
+    });
   };
   return (
     <DropdownMenu>
@@ -58,7 +65,10 @@ const FileCardActions = ({ file }: { file: Doc<"files"> & { url: string | null }
             <span className="">Download</span>
           </DropdownMenuItem>
         </a>
-        <DropdownMenuItem className="flex gap-1 items-center  cursor-pointer">
+        <DropdownMenuItem
+          className="flex gap-1 items-center  cursor-pointer"
+          onClick={onFavoriteClick}
+        >
           <Star className="size-4" />
           <span className="">Favorite</span>
         </DropdownMenuItem>

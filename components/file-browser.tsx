@@ -8,6 +8,7 @@ import { Grid, Rows2 } from "lucide-react";
 import { api } from "@/convex/_generated/api";
 import { useOrganization, useUser } from "@clerk/nextjs";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
+import { SearchBar } from "./search-bar";
 
 const FileBrowser = () => {
   const { isLoaded, organization } = useOrganization();
@@ -33,6 +34,7 @@ const FileBrowser = () => {
         </TabsList>
         <FileFilter />
       </div>
+      <SearchBar query="" setQuery={() => {}} />
 
       <TabsContent value="grid" className="w-full">
         <div className="grid grid-cols-3 gap-4">
