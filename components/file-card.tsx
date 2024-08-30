@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import {
   Card,
   CardContent,
@@ -14,7 +13,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Download, ImageIcon, MoreVertical, Star, Trash2 } from "lucide-react";
+import { Download, MoreVertical, Star, Trash2 } from "lucide-react";
 import { useConfirmModal } from "@/hooks/use-confirm-modal";
 import { Doc } from "@/convex/_generated/dataModel";
 import { useMutation, useQuery } from "convex/react";
@@ -24,6 +23,8 @@ import Image from "next/image";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { formatRelative } from "date-fns";
 import { fileTypeIcons } from "@/constants";
+import { twMerge } from "tailwind-merge";
+import { Protect, useUser } from "@clerk/nextjs";
 
 const FileCardActions = ({
   file,
@@ -31,6 +32,8 @@ const FileCardActions = ({
   file: Doc<"files"> & { url: string | null; isFavorited: boolean };
 }) => {
   const { onOpen, setOnConfirm } = useConfirmModal();
+
+  const user = useQuery(api.users.current, {});
 
   const deleteFile = useMutation(api.files.deleteFile);
   const toggleFavorite = useMutation(api.files.toggleFavorite);
@@ -63,14 +66,6 @@ const FileCardActions = ({
         error: "There was an error completing the action.",
       }
     );
-    // if (!file.isFavorited) {
-    //   toast.success("File has been added to favorites! ✅");
-    // } else {
-    //   toast.("File has been removed from favorites.");
-    // }
-    // await toggleFavorite({
-    //   fileId: file.fileId,
-    // });
   };
   return (
     <DropdownMenu>
@@ -93,16 +88,32 @@ const FileCardActions = ({
           className="flex gap-1 items-center  cursor-pointer"
           onClick={onFavoriteClick}
         >
-          <Star className="size-4" />
+          <Star
+            className={twMerge(
+              "size-4",
+              file.isFavorited && "fill-orange-500 text-orange-500"
+            )}
+          />
           <span className="">{file.isFavorited ? "Unfavorite" : "Favorite"}</span>
         </DropdownMenuItem>
-        <DropdownMenuItem
-          className="flex gap-1 text-red-500 items-center hover:text-red-500 cursor-pointer"
-          onClick={onDeleteClick}
+
+        <Protect
+          condition={(check) => {
+            return (
+              check({
+                role: "org:admin",
+              }) || file.userId === user?._id
+            );
+          }}
         >
-          <Trash2 className="size-4" />
-          <span className="">Delete</span>
-        </DropdownMenuItem>
+          <DropdownMenuItem
+            className="flex gap-1 text-red-500 items-center hover:text-red-500 cursor-pointer"
+            onClick={onDeleteClick}
+          >
+            <Trash2 className="size-4" />
+            <span className="">Delete</span>
+          </DropdownMenuItem>
+        </Protect>
       </DropdownMenuContent>
     </DropdownMenu>
   );

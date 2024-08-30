@@ -14,7 +14,7 @@ const Sidebar = () => {
         {sidebar_links.map(({ href, label, Icon }) => {
           const isActive = pathname.match(href);
           return (
-            <Link href={href}>
+            <Link href={href} key={href}>
               <div
                 className={twMerge(
                   "flex gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 transition-all",

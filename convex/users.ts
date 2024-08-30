@@ -84,46 +84,6 @@ export const addorUpdateOrgIdToUser = internalMutation({
   },
 });
 
-// export const updateRoleInOrgForUser = internalMutation({
-//   args: { tokenIdentifier: v.string(), orgId: v.string(), role: roles },
-//   async handler(ctx, args) {
-//     const user = await getUser(ctx, args.tokenIdentifier);
-
-//     const org = user.orgIds.find((org) => org.orgId === args.orgId);
-
-//     if (!org) {
-//       throw new ConvexError(
-//         "expected an org on the user but was not found when updating"
-//       );
-//     }
-
-//     org.role = args.role;
-
-//     await ctx.db.patch(user._id, {
-//       orgIds: user.orgIds,
-//     });
-//   },
-// });
-
-// export const getMe = query({
-//   args: {},
-//   async handler(ctx) {
-//     const identity = await ctx.auth.getUserIdentity();
-
-//     if (!identity) {
-//       return null;
-//     }
-
-//     const user = await getUser(ctx, identity.tokenIdentifier);
-
-//     if (!user) {
-//       return null;
-//     }
-
-//     return user;
-//   },
-// });
-
 // New
 
 export const current = query({

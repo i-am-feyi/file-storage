@@ -58,7 +58,7 @@ const FileBrowser = ({ mode }: FileBrowserProps) => {
       <SearchBar query="" setQuery={() => {}} />
 
       <TabsContent value="grid" className="w-full">
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-4">
           {modifiedFiles?.map((file) => (
             <Fragment key={file.fileId}>
               <FileCard file={file} />
