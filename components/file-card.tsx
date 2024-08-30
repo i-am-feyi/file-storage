@@ -14,7 +14,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ImageIcon, MoreVertical, Trash2 } from "lucide-react";
+import { Download, ImageIcon, MoreVertical, Star, Trash2 } from "lucide-react";
 import { useConfirmModal } from "@/hooks/use-confirm-modal";
 import { Doc } from "@/convex/_generated/dataModel";
 import { useMutation, useQuery } from "convex/react";
@@ -23,8 +23,9 @@ import toast from "react-hot-toast";
 import Image from "next/image";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { formatRelative } from "date-fns";
+import { fileTypeIcons } from "@/constants";
 
-const FileCardActions = ({ file }: { file: Doc<"files"> }) => {
+const FileCardActions = ({ file }: { file: Doc<"files"> & { url: string | null } }) => {
   const { onOpen, setOnConfirm } = useConfirmModal();
 
   const deleteFile = useMutation(api.files.deleteFile);
@@ -46,12 +47,27 @@ const FileCardActions = ({ file }: { file: Doc<"files"> }) => {
         <MoreVertical className="size-4" />
       </DropdownMenuTrigger>
       <DropdownMenuContent>
+        <a
+          href={file.url!}
+          download={file.name}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <DropdownMenuItem className="flex gap-1 items-center cursor-pointer">
+            <Download className="size-4" />
+            <span className="">Download</span>
+          </DropdownMenuItem>
+        </a>
+        <DropdownMenuItem className="flex gap-1 items-center  cursor-pointer">
+          <Star className="size-4" />
+          <span className="">Favorite</span>
+        </DropdownMenuItem>
         <DropdownMenuItem
           className="flex gap-1 text-red-500 items-center hover:text-red-500 cursor-pointer"
           onClick={onDeleteClick}
         >
-          <Trash2 className="size-5 hover:text-red-500" />
-          <span className="font-semibold hover:text-red-500">Delete</span>
+          <Trash2 className="size-4" />
+          <span className="">Delete</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
@@ -63,11 +79,12 @@ const FileCard = ({ file }: { file: Doc<"files"> & { url: string | null } }) => 
     userId: file.userId,
   });
   return (
-    <Card>
+    <Card className="flex flex-col justify-between">
       <CardHeader className="relative">
         <CardTitle className="flex justify-between">
           <div className="flex gap-1 items-center">
-            <ImageIcon />
+            {fileTypeIcons[file.type]}
+            {/* <ImageIcon /> */}
             <span className="text-lg font-normal capitalize">{file.name}</span>
           </div>
         </CardTitle>
@@ -76,24 +93,17 @@ const FileCard = ({ file }: { file: Doc<"files"> & { url: string | null } }) => 
         </div>
       </CardHeader>
       <CardContent>
-        <div className="flex flex-col items-center">
-          {file.url && file.type === "jpeg" && (
+        <div className="flex-1 flex flex-co justify-center items-center object-contain h-40">
+          {file.url && file.type === "image" ? (
             <Image
               src={file.url}
               alt={file.name}
               width={200}
               height={100}
-              className="size-40 w-auto"
+              className="object-contain h-full w-full"
             />
-          )}
-          {file.url && file.type === "png" && (
-            <Image
-              src={file.url}
-              alt={file.name}
-              width={200}
-              height={100}
-              className="size-40 w-auto"
-            />
+          ) : (
+            <div className="*:size-16">{fileTypeIcons[file.type]}</div>
           )}
         </div>
       </CardContent>

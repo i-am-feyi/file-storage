@@ -25,7 +25,7 @@ import toast from "react-hot-toast";
 import { Loader2 } from "lucide-react";
 import { Doc, Id } from "@/convex/_generated/dataModel";
 import { useOrganization, useUser } from "@clerk/nextjs";
-import { fileTypes } from "@/constants";
+import { fileTypes } from "@/constants/index";
 
 const uploadFormSchema = z.object({
   title: z
