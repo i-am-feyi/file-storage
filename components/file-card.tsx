@@ -160,7 +160,7 @@ const FileCard = ({
         <div className="flex gap-2 text-xs text-gray-700 w-40 items-center">
           <Avatar className="w-6 h-6">
             <AvatarImage src={fileCreator?.image} />
-            <AvatarFallback>CN</AvatarFallback>
+            <AvatarFallback>?</AvatarFallback>
           </Avatar>
           {fileCreator?.name}
         </div>

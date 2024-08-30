@@ -4,11 +4,12 @@ import FileCard from "./file-card";
 import FileFilter from "./file-filter";
 import { useQuery } from "convex/react";
 import { Fragment } from "react";
-import { Grid, Rows2 } from "lucide-react";
+import { Grid, Loader2, Rows2 } from "lucide-react";
 import { api } from "@/convex/_generated/api";
 import { useOrganization, useUser } from "@clerk/nextjs";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { SearchBar } from "./search-bar";
+import { useFileFilterStore } from "@/hooks/use-file-filter";
 
 interface FileBrowserProps {
   mode: "all" | "favorites" | "trash";
@@ -17,6 +18,8 @@ interface FileBrowserProps {
 const FileBrowser = ({ mode }: FileBrowserProps) => {
   const { isLoaded, organization } = useOrganization();
   const { user } = useUser();
+
+  const { type } = useFileFilterStore();
 
   const orgId = organization?.id ?? user?.id;
 
@@ -27,6 +30,7 @@ const FileBrowser = ({ mode }: FileBrowserProps) => {
           orgId: orgId!,
           favorites: mode === "favorites" && true,
           deletedOnly: mode === "trash" && true,
+          type: type !== "all" ? type : undefined,
         }
       : "skip"
   );
@@ -39,7 +43,8 @@ const FileBrowser = ({ mode }: FileBrowserProps) => {
       isFavorited: (favorites ?? []).some((favorite) => favorite.fileId === file._id),
     })) ?? [];
 
-  if (files === undefined) return null;
+  const isLoading = files === undefined;
+
   return (
     <Tabs defaultValue="grid">
       <div className="mb-6 flex justify-between">
@@ -58,6 +63,7 @@ const FileBrowser = ({ mode }: FileBrowserProps) => {
       <SearchBar query="" setQuery={() => {}} />
 
       <TabsContent value="grid" className="w-full">
+        {isLoading && <Loader2 />}
         <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-4">
           {modifiedFiles?.map((file) => (
             <Fragment key={file.fileId}>

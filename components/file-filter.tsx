@@ -1,4 +1,6 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 import {
   Select,
   SelectContent,
@@ -7,15 +9,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
+import { useFileFilterStore } from "@/hooks/use-file-filter";
 
 const FileFilter = () => {
+  const { setType } = useFileFilterStore();
+  const [filter, setFilter] = useState("all");
+
+  const onFilterSelect = (filter: any) => {
+    setFilter(filter);
+    setType(filter);
+  };
   return (
     <div className="flex gap-2 items-center">
       <span className="font-semibold">Type Filter</span>
 
-      <Select>
+      <Select value={filter} onValueChange={onFilterSelect}>
         <SelectTrigger className="w-[180px]">
-          <SelectValue placeholder="All" />
+          <SelectValue />
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
