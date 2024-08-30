@@ -22,7 +22,13 @@ const FileBrowser = ({ mode }: FileBrowserProps) => {
 
   const files = useQuery(
     api.files.getFiles,
-    isLoaded ? { orgId: orgId!, favorites: mode === "favorites" && true } : "skip"
+    isLoaded
+      ? {
+          orgId: orgId!,
+          favorites: mode === "favorites" && true,
+          deletedOnly: mode === "trash" && true,
+        }
+      : "skip"
   );
 
   const favorites = useQuery(api.files.getAllFavorites, orgId ? { orgId } : "skip");

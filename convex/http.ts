@@ -3,6 +3,8 @@ import { httpRouter } from "convex/server";
 import { internal } from "./_generated/api";
 import { WebhookEvent } from "@clerk/backend";
 import { httpAction } from "./_generated/server";
+import { roles } from "./schema";
+import { Validator } from "convex/values";
 
 // Validating Webhook Request
 const validatePayload = async (req: Request): Promise<WebhookEvent | undefined> => {
@@ -51,20 +53,20 @@ export const handleClerkUserWebhook = httpAction(async (ctx, req) => {
       break;
     }
 
-    // case "user.deleted": {
-    //   try {
-    //     await ctx.runMutation(internal.users.deleteClerkUser, {
-    //       clerkUserId: event.data.id!,
-    //     });
-    //   } catch (error) {
-    //     console.error(`Error processing ${event.type}:`, error);
-    //   }
-    //   break;
-    // }
-
-    case "organizationMembership.created": {
-    }
+    case "organizationMembership.created":
     case "organizationMembership.updated": {
+      try {
+        console.log("orgFn");
+        await ctx.runMutation(internal.users.addorUpdateOrgIdToUser, {
+          clerkId: event.data.public_user_data.user_id,
+          orgId: event.data.organization.id,
+          role: event.data.role === "org:admin" ? "admin" : "member",
+        });
+      } catch (error) {
+        console.log(error);
+      }
+
+      break;
     }
 
     default: {

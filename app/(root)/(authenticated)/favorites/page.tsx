@@ -4,10 +4,10 @@ import React from "react";
 
 const Favorites = () => {
   return (
-    <div className="grid gap-8 w-full">
-      <PageTitle title="Your Favorites" />
+    <div className="w-full">
+      <PageTitle title="Favorites" />
 
-      <div>
+      <div className="mt-10">
         <FileBrowser mode="favorites" />
       </div>
     </div>

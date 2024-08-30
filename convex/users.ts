@@ -54,17 +54,33 @@ export const upsertClerkUser = internalMutation({
   },
 });
 
-export const addOrgIdToUser = internalMutation({
+export const addorUpdateOrgIdToUser = internalMutation({
   args: { clerkId: v.string(), orgId: v.string(), role: roles },
+
   async handler(ctx, { clerkId, orgId, role }) {
     const user = await userByClerkId(ctx, clerkId);
 
-    if (!user)
+    if (!user) {
       throw new ConvexError("[addOrgIdToUser] - Could not find user with Clerk ID");
+    }
 
-    await ctx.db.patch(user._id, {
-      orgIds: [...user.orgIds, { orgId: orgId, role: role }],
-    });
+    const org = user.orgIds.find((org) => org.orgId === orgId);
+    console.log("Find result");
+
+    if (org) {
+      org.role = role;
+      console.log("Org.Role:", org.role);
+      console.log("Role:", role);
+      console.log("User.OrgIds", user.orgIds);
+
+      await ctx.db.patch(user._id, {
+        orgIds: user.orgIds,
+      });
+    } else {
+      await ctx.db.patch(user._id, {
+        orgIds: [...user.orgIds, { orgId, role }],
+      });
+    }
   },
 });
 
