@@ -7,7 +7,7 @@ export default function Home() {
       <PageTitle title="Your Files" />
 
       <div>
-        <FileBrowser />
+        <FileBrowser mode="all" />
       </div>
     </div>
   );

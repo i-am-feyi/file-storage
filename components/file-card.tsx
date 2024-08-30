@@ -25,7 +25,11 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { formatRelative } from "date-fns";
 import { fileTypeIcons } from "@/constants";
 
-const FileCardActions = ({ file }: { file: Doc<"files"> & { url: string | null } }) => {
+const FileCardActions = ({
+  file,
+}: {
+  file: Doc<"files"> & { url: string | null; isFavorited: boolean };
+}) => {
   const { onOpen, setOnConfirm } = useConfirmModal();
 
   const deleteFile = useMutation(api.files.deleteFile);
@@ -44,9 +48,29 @@ const FileCardActions = ({ file }: { file: Doc<"files"> & { url: string | null }
   };
 
   const onFavoriteClick = async () => {
-    await toggleFavorite({
-      fileId: file.fileId,
-    });
+    const initalStateIsFavorited = file.isFavorited;
+    toast.promise(
+      toggleFavorite({
+        fileId: file.fileId,
+      }),
+      {
+        loading: "Loading...",
+        success: () => {
+          return initalStateIsFavorited
+            ? "File has been removed from favorites."
+            : "File has been added to favorites!";
+        },
+        error: "There was an error completing the action.",
+      }
+    );
+    // if (!file.isFavorited) {
+    //   toast.success("File has been added to favorites! ✅");
+    // } else {
+    //   toast.("File has been removed from favorites.");
+    // }
+    // await toggleFavorite({
+    //   fileId: file.fileId,
+    // });
   };
   return (
     <DropdownMenu>
@@ -70,7 +94,7 @@ const FileCardActions = ({ file }: { file: Doc<"files"> & { url: string | null }
           onClick={onFavoriteClick}
         >
           <Star className="size-4" />
-          <span className="">Favorite</span>
+          <span className="">{file.isFavorited ? "Unfavorite" : "Favorite"}</span>
         </DropdownMenuItem>
         <DropdownMenuItem
           className="flex gap-1 text-red-500 items-center hover:text-red-500 cursor-pointer"
@@ -84,7 +108,11 @@ const FileCardActions = ({ file }: { file: Doc<"files"> & { url: string | null }
   );
 };
 
-const FileCard = ({ file }: { file: Doc<"files"> & { url: string | null } }) => {
+const FileCard = ({
+  file,
+}: {
+  file: Doc<"files"> & { url: string | null; isFavorited: boolean };
+}) => {
   const fileCreator = useQuery(api.users.getUserProfile, {
     userId: file.userId,
   });

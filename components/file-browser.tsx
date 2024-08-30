@@ -10,13 +10,28 @@ import { useOrganization, useUser } from "@clerk/nextjs";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { SearchBar } from "./search-bar";
 
-const FileBrowser = () => {
+interface FileBrowserProps {
+  mode: "all" | "favorites" | "trash";
+}
+
+const FileBrowser = ({ mode }: FileBrowserProps) => {
   const { isLoaded, organization } = useOrganization();
   const { user } = useUser();
 
   const orgId = organization?.id ?? user?.id;
 
-  const files = useQuery(api.files.getFiles, isLoaded ? { orgId: orgId! } : "skip");
+  const files = useQuery(
+    api.files.getFiles,
+    isLoaded ? { orgId: orgId!, favorites: mode === "favorites" && true } : "skip"
+  );
+
+  const favorites = useQuery(api.files.getAllFavorites, orgId ? { orgId } : "skip");
+
+  const modifiedFiles =
+    files?.map((file) => ({
+      ...file,
+      isFavorited: (favorites ?? []).some((favorite) => favorite.fileId === file._id),
+    })) ?? [];
 
   if (files === undefined) return null;
   return (
@@ -38,7 +53,7 @@ const FileBrowser = () => {
 
       <TabsContent value="grid" className="w-full">
         <div className="grid grid-cols-3 gap-4">
-          {files?.map((file) => (
+          {modifiedFiles?.map((file) => (
             <Fragment key={file.fileId}>
               <FileCard file={file} />
             </Fragment>
