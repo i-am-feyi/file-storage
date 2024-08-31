@@ -9,7 +9,7 @@ import ModalProvider from "@/providers/modal-provider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "File Storage App",
+  title: "UpBox | File and Cloud Storage",
   description: "Easily store, manage and share files.",
 };
 
