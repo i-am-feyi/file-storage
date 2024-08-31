@@ -21,6 +21,7 @@ import { api } from "@/convex/_generated/api";
 import toast from "react-hot-toast";
 import { twMerge } from "tailwind-merge";
 import { Protect } from "@clerk/nextjs";
+import { fileTypeIcons, fileTypeIcons2 } from "@/constants";
 
 export type Files = {
   isFavorited: boolean;
@@ -49,7 +50,13 @@ export const columns: ColumnDef<Files>[] = [
     header: "Type",
     cell: ({ row }) => {
       const file = row.original;
-      return <p className="first-letter:capitalize">{file.type}</p>;
+      const Icon = fileTypeIcons2[file.type];
+      return (
+        <div className="flex gap-2 items-center">
+          <Icon className="text-black/80 size-5" />
+          <p className="first-letter:capitalize">{file.type}</p>
+        </div>
+      );
     },
   },
   {

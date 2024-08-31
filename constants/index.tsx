@@ -11,6 +11,7 @@ import {
   FileType,
   Trash2,
   Star,
+  FileQuestion,
 } from "lucide-react";
 
 export const fileTypes = {
@@ -71,6 +72,21 @@ export const fileTypeIcons = {
   email: <Mail />,
   binary: <UploadCloud />,
   web: <Globe />,
+  others: <FileQuestion />,
+} as any;
+
+export const fileTypeIcons2 = {
+  document: FileText,
+  image: Image,
+  video: Video,
+  audio: Music,
+  archive: Archive,
+  font: FileType,
+  form: File,
+  email: Mail,
+  binary: UploadCloud,
+  web: Globe,
+  others: FileQuestion,
 } as any;
 
 export const sidebar_links = [
