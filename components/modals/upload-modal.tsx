@@ -55,7 +55,6 @@ const UploadModal = () => {
 
   const { startUpload, isUploading } = useUploadFiles(generateUploadUrl, {
     onUploadComplete: async (res) => {
-      console.log(res);
       const response = res[0].response as successResponse;
       if (response.storageId) {
         const storageId = response.storageId as Id<"_storage">;
@@ -73,9 +72,7 @@ const UploadModal = () => {
       onClose();
       toast.success("File uploaded successfully!", { duration: 3000 });
     },
-    onUploadProgress: (p) => {
-      console.log(p);
-    },
+    onUploadProgress: (p) => {},
     onUploadError: () => toast.error("An error occurred while uploading the file."),
   });
 
@@ -90,8 +87,6 @@ const UploadModal = () => {
   const fileRef = form.register("file");
 
   const onSubmit = (values: uploadSchema) => {
-    console.log(values);
-
     void startUpload([values.file[0]]);
   };
 

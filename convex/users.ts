@@ -65,13 +65,9 @@ export const addorUpdateOrgIdToUser = internalMutation({
     }
 
     const org = user.orgIds.find((org) => org.orgId === orgId);
-    console.log("Find result");
 
     if (org) {
       org.role = role;
-      console.log("Org.Role:", org.role);
-      console.log("Role:", role);
-      console.log("User.OrgIds", user.orgIds);
 
       await ctx.db.patch(user._id, {
         orgIds: user.orgIds,

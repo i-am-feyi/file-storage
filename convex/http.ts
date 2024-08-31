@@ -22,7 +22,6 @@ const validatePayload = async (req: Request): Promise<WebhookEvent | undefined> 
 
   try {
     const event = webhook.verify(payload, svixHeaders) as WebhookEvent;
-    console.log(event);
     return event;
   } catch (error) {
     console.log("Clerk webhook request could not be verified!");
@@ -56,7 +55,6 @@ export const handleClerkUserWebhook = httpAction(async (ctx, req) => {
     case "organizationMembership.created":
     case "organizationMembership.updated": {
       try {
-        console.log("orgFn");
         await ctx.runMutation(internal.users.addorUpdateOrgIdToUser, {
           clerkId: event.data.public_user_data.user_id,
           orgId: event.data.organization.id,
