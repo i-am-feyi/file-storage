@@ -65,7 +65,7 @@ const UploadModal = () => {
             fileStorageId: storageId,
             name: form.getValues("title"),
             orgId: orgId!,
-            type: fileTypes[res[0].type],
+            type: fileTypes[res[0].type] || "others",
           });
         }
       }

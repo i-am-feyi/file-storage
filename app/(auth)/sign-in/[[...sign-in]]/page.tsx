@@ -10,13 +10,10 @@ export default function Page() {
         <div className="text-center space-y-4 pt-16">
           <div className="flex items-center justify-center mb-12">
             <Link href="/">
-              <Image src="/logos/logo.png" alt="logo" height={120} width={240} />
+              <Image src="/images/upbox-logo.png" alt="logo" height={150} width={150} />
             </Link>
           </div>
           <h1 className="font-bold text-3xl text-[#2E2A47]">Welcome Back!</h1>
-          <p className="text-base text-[#7E8CA0]">
-            Log in or Sign up to get back to your dashboard!
-          </p>
         </div>
         <div className="flex items-center justify-center mt-8">
           <ClerkLoaded>
@@ -27,8 +24,8 @@ export default function Page() {
           </ClerkLoading>
         </div>
       </div>
-      <div className="h-full bg-blue-600 hidden lg:flex items-center justify-center">
-        <Image src="/logos/icon_white.png" alt="Logo" width={100} height={100} />
+      <div className="h-full bg-gray-950 hidden lg:flex items-center justify-center">
+        <Image src="/images/upbox-icon-white.png" alt="Logo" width={250} height={250} />
       </div>
     </div>
   );
