@@ -22,7 +22,7 @@ const Sidebar = () => {
 
   return (
     <div className="grid lg:w-52">
-      <div className="">
+      <div className="lg:hidden">
         <Select defaultValue="/all" onValueChange={onSelectChange}>
           <SelectTrigger>
             <SelectValue />
