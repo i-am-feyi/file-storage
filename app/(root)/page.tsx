@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 
 const page = () => {
   return (
-    <section className="py-48">
+    <section className="py-16 md:py-48">
       <div className="container ">
         <div className="grid items-center text-center max-w-2xl mx-auto">
           <h1 className="text-6xl font-semibold tracking-tighter">
