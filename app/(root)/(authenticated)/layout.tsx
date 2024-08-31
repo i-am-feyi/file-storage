@@ -6,7 +6,7 @@ const AuthenticatedLayout = ({ children }: { children: React.ReactNode }) => {
     <section className="py-16">
       <div>
         <div className="container">
-          <div className="flex gap-10">
+          <div className="flex flex-col lg:flex-row gap-10">
             <Sidebar />
             {children}
           </div>

@@ -49,20 +49,22 @@ const FileBrowser = ({ mode }: FileBrowserProps) => {
 
   return (
     <Tabs defaultValue="grid">
-      <div className="mb-6 flex justify-between">
-        <TabsList>
-          <TabsTrigger value="grid" className="flex gap-2 items-center">
-            <Grid />
-            <span>Grid</span>
-          </TabsTrigger>
-          <TabsTrigger value="table" className="flex gap-2 items-center">
-            <Rows2 />
-            <span>Table</span>
-          </TabsTrigger>
-        </TabsList>
+      <div className="mb-6 inline-flex flex-col gap-6 justify-between">
+        <div>
+          <TabsList>
+            <TabsTrigger value="grid" className="flex gap-2 items-center">
+              <Grid />
+              <span>Grid</span>
+            </TabsTrigger>
+            <TabsTrigger value="table" className="flex gap-2 items-center">
+              <Rows2 />
+              <span>Table</span>
+            </TabsTrigger>
+          </TabsList>
+        </div>
         <FileFilter />
       </div>
-      <SearchBar query="" setQuery={() => {}} />
+      {/* <SearchBar query="" setQuery={() => {}} /> */}
 
       <TabsContent value="grid" className="w-full">
         {isLoading && <Loader2 />}

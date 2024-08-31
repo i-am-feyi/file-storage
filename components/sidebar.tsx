@@ -1,16 +1,39 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { sidebar_links } from "@/constants";
 import { twMerge } from "tailwind-merge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
 
 const Sidebar = () => {
   const pathname = usePathname();
+  const router = useRouter();
+
+  const onSelectChange = (value: string) => {
+    router.push(value);
+  };
 
   return (
-    <div className="grid w-52">
-      <ul className="flex flex-col gap-3">
+    <div className="grid lg:w-52">
+      <div className="">
+        <Select defaultValue="/all" onValueChange={onSelectChange}>
+          <SelectTrigger>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="/all">All Files</SelectItem>
+            <SelectItem value="/favorites">Favorites</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+      <ul className="hidden lg:flex flex-col gap-3">
         {sidebar_links.map(({ href, label, Icon }) => {
           const isActive = pathname.match(href);
           return (

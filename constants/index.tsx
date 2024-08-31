@@ -84,9 +84,9 @@ export const sidebar_links = [
     Icon: Star,
     href: "/favorites",
   },
-  {
-    label: "Trash",
-    Icon: Trash2,
-    href: "/trash",
-  },
+  // {
+  //   label: "Trash",
+  //   Icon: Trash2,
+  //   href: "/trash",
+  // },
 ];
