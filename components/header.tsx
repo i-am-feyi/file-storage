@@ -45,9 +45,6 @@ const Header = () => {
                     Sign in
                   </Link>
                 </Button>
-                {/* <Button asChild>
-                  <Link href="/sign-up">Get started</Link>
-                </Button> */}
               </div>
             </Unauthenticated>
           </ClerkLoaded>
