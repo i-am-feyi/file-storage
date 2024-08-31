@@ -8,7 +8,7 @@ const page = () => {
     <section className="py-16 md:py-48">
       <div className="container ">
         <div className="grid items-center text-center max-w-2xl mx-auto">
-          <h1 className="text-6xl font-semibold tracking-tighter">
+          <h1 className="text-5xl md:text-6xl font-semibold tracking-tighter">
             Welcome to the new age of cloud storage.
           </h1>
           <p className="text-xl text-black/50 mt-6">
