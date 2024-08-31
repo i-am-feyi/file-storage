@@ -30,10 +30,12 @@ const FileFilter = () => {
         <SelectContent>
           <SelectGroup>
             <SelectItem value="all">All</SelectItem>
-            <SelectItem value="image">Images</SelectItem>
-            <SelectItem value="video">Videos</SelectItem>
-            <SelectItem value="document">Documents</SelectItem>
-            <SelectItem value="archive">Archives</SelectItem>
+            <SelectItem value="image">Image</SelectItem>
+            <SelectItem value="video">Video</SelectItem>
+            <SelectItem value="audio">Audio</SelectItem>
+            <SelectItem value="archive">Archive</SelectItem>
+            <SelectItem value="document">Document</SelectItem>
+            <SelectItem value="others">Other</SelectItem>
           </SelectGroup>
         </SelectContent>
       </Select>

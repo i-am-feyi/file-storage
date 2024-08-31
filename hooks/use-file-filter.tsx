@@ -1,7 +1,19 @@
 import { create } from "zustand";
 
 interface useFileFilterStore {
-  type: "all" | "image" | "csv" | "pdf" | undefined;
+  type:
+    | "all"
+    | "web"
+    | "font"
+    | "form"
+    | "image"
+    | "video"
+    | "audio"
+    | "email"
+    | "binary"
+    | "archive"
+    | "document"
+    | undefined;
   setType: (type: any) => void;
 }
 

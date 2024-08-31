@@ -1,15 +1,17 @@
 "use client";
 
+import { Fragment } from "react";
 import FileCard from "./file-card";
 import FileFilter from "./file-filter";
 import { useQuery } from "convex/react";
-import { Fragment } from "react";
-import { Grid, Loader2, Rows2 } from "lucide-react";
-import { api } from "@/convex/_generated/api";
-import { useOrganization, useUser } from "@clerk/nextjs";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { SearchBar } from "./search-bar";
+import { api } from "@/convex/_generated/api";
+import { columns } from "./data-table/columns";
+import { DataTable } from "./data-table/data-table";
+import { Grid, Loader2, Rows2 } from "lucide-react";
+import { useOrganization, useUser } from "@clerk/nextjs";
 import { useFileFilterStore } from "@/hooks/use-file-filter";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 
 interface FileBrowserProps {
   mode: "all" | "favorites" | "trash";
@@ -73,7 +75,9 @@ const FileBrowser = ({ mode }: FileBrowserProps) => {
         </div>
       </TabsContent>
 
-      <TabsContent value="table">Change your password here.</TabsContent>
+      <TabsContent value="table">
+        <DataTable columns={columns} data={modifiedFiles} />
+      </TabsContent>
     </Tabs>
   );
 };

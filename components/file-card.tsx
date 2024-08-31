@@ -67,6 +67,7 @@ const FileCardActions = ({
       }
     );
   };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="focus-visible:outline-none">

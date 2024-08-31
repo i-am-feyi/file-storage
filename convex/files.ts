@@ -103,6 +103,7 @@ export const getFiles = query({
     let files = await ctx.db
       .query("files")
       .withIndex("by_orgId", (q) => q.eq("orgId", args.orgId))
+      .order("desc")
       .collect();
 
     const query = args.query;
@@ -136,9 +137,21 @@ export const getFiles = query({
       files = files.filter((file) => file.type === args.type);
     }
 
+    if (args.type && args.type === "others") {
+      files = files.filter(
+        (file) =>
+          file.type !== "image" ||
+          file.type !== "video" ||
+          file.type !== "audio" ||
+          file.type !== "archive" ||
+          file.type !== "document"
+      );
+    }
+
     const filesWithUrl = await Promise.all(
       files.map(async (file) => ({
         ...file,
+        user: await ctx.db.get(file.userId),
         url: await ctx.storage.getUrl(file.fileStorageId),
       }))
     );
